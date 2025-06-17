@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎉 Happy Birthday RIM 🎉</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: url('background.jpeg') center/cover no-repeat;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .message {
+      font-size:2rem;
+      color: deeppink;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px pink, 0 0 30px pink;
+      z-index: 10;
+    }
+    
+    .game-area {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      background: url('1.gif') center/cover no-repeat;
+    }
+    
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 2px;
+      width: 100%;
+      height: 100%; 
+    }
+    
+    .card {
+      background: linear-gradient(45deg, hotpink, deeppink);
+      border: 2px solid pink;
+      border-radius: 10%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: black;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(255,192,203,0.3);
+    }
+    
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(255,192,203,0.5);
+    }
+    
+    .card.vanish {
+      opacity: 0;
+      transform: scale(0);
+      pointer-events: none;
+    }
+    
+    .card.wrong { 
+      animation: shake 0.4s; 
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+    
+    .firework {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: fireworkExplode 2s ease-out forwards;
+    }
+    
+    @keyframes fireworkExplode {
+      0% { 
+        opacity: 1; 
+        transform: scale(1);
+      }
+      100% { 
+        opacity: 0; 
+        transform: scale(3) translate(var(--dx), var(--dy));
+      }
+    }
+    
+    .sphere {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      animation: sphereGlow 2s ease-in-out infinite alternate;
+    }
+    
+    .sphere:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255,255,255,0.6);
+    }
+    
+    @keyframes sphereGlow {
+      0% { box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+      100% { box-shadow: 0 0 30px rgba(255,255,255,0.6); }
+    }
+    
+    .sphere.floating {
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+    
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    
+    .balloon {
+      position: absolute;
+      width: 60px;
+      height: auto;
+      pointer-events: none;
+      animation: balloonRise linear infinite;
+    }
+    
+    @keyframes balloonRise {
+      0% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 0; 
+      }
+      10% { 
+        opacity: 1; 
+      }
+      90% { 
+        opacity: 1; 
+      }
+      100% { 
+        transform: translateY(-110vh) rotate(10deg); 
+        opacity: 0; 
+      }
+    }
+    
+    .photo-book-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff9a9e, #fecfef);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    .photo-book-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+      50% { box-shadow: 0 8px 25px rgba(255,154,158,0.6); }
+    }
+    
+    .photo-gallery {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .photo-container {
+      max-width: 80vw;
+      max-height: 80vh;
+      position: relative;
+    }
+    
+    .photo-container img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.8);
+      border: none;
+      font-size: 2rem;
+      padding: 15px 20px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255,255,255,1);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .nav-btn.prev { left: -80px; }
+    .nav-btn.next { right: -80px; }
+    
+    .close-btn {
+      position: absolute;
+      top: -60px;
+      right: 0;
+      background: #ff4757;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .close-btn:hover {
+      background: #ff3742;
+      transform: scale(1.1);
+    }
+    
+    .dance-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 500;
+      pointer-events: none;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(255,255,255,0.5);
+    }
+    
+    .dance-overlay img {
+      width: 50%;
+      height: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="message" id="messageDisplay"></div>
+    <div class="game-area">
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+  
+  <div class="photo-gallery" id="photoGallery">
+    <div class="photo-container">
+      <img id="currentPhoto" src="" alt="Gallery Photo">
+      <button class="nav-btn prev" onclick="prevPhoto()">❮</button>
+      <button class="nav-btn next" onclick="nextPhoto()">❯</button>
+      <button class="close-btn" onclick="closeGallery()">✕</button>
+    </div>
+  </div>
+  
+  <audio id="correctSound" src="1.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="2.wav" preload="auto"></audio>
+  <audio id="songPlayer" preload="none"></audio>
+  
+  <script>
+    const MESSAGE = "HAPPYBIRTHDAYRIM";
+    const grid = document.getElementById("grid");
+    const display = document.getElementById("messageDisplay");
+    const correctSound = document.getElementById("correctSound");
+    const wrongSound = document.getElementById("wrongSound");
+    const songPlayer = document.getElementById("songPlayer");
+    
+    let index = 0;
+    let isAnimating = false;
+    let gameCompleted = false;
+    let currentPhotoIndex = 0;
+    let currentDanceGif = null;
+    
+    // Expandable media arrays - add as many as you want!
+    const mediaItems = [
+      { type: 'song', file: 'song1.mp3', symbol: '🎵', color: '#FFB3E6', dance: 'dance1.gif' },
+      { type: 'song', file: 'song2.mp3', symbol: '🎶', color: '#B3E5FF', dance: 'dance2.gif' },
+      { type: 'song', file: 'song3.mp3', symbol: '🎼', color: '#FFCCB3', dance: 'dance3.gif' },
+      { type: 'video', file: 'video1.mp4', symbol: '🎬', color: '#E6FFB3' },
+      { type: 'video', file: 'video2.mp4', symbol: '🎥', color: '#FFE6B3' },
+      { type: 'video', file: 'video3.mp4', symbol: '📹', color: '#E6B3FF' }
+    ];
+    
+    const photoFiles = [
+      'balloon1.png', 'balloon2.png', 'balloon3.png', 'balloon4.png', 
+      'balloon5.png', 'balloon6.png', 'balloon7.png', 'balloon8.png', 'balloon9.png', 'balloon10.png', 'two_cute_cartoon_fairies_skating_on_a (19).jpeg',
+    ];
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function createCards() {
+      const letters = shuffle([...MESSAGE.split("")]);
+      while (letters.length < 16) letters.push("★");
+      shuffle(letters);
+      
+      letters.forEach(letter => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.textContent = "?";
+        card.dataset.letter = letter;
+        card.onclick = () => onCardClick(card);
+        grid.appendChild(card);
+      });
+    }
+
+    function onCardClick(card) {
+      if (isAnimating || card.classList.contains("vanish") || gameCompleted) return;
+      
+      const expected = MESSAGE[index];
+      if (card.dataset.letter === expected) {
+        isAnimating = true;
+        card.classList.add("vanish");
+        
+        correctSound.currentTime = 0;
+        correctSound.play();
+        
+        index++;
+        updateDisplay();
+        
+        if (index === MESSAGE.length) {
+          gameCompleted = true;
+          finishGame();
+        }
+        
+        setTimeout(() => isAnimating = false, 500);
+      } else {
+        card.classList.add("wrong");
+        wrongSound.currentTime = 0;
+        wrongSound.play();
+        setTimeout(() => card.classList.remove("wrong"), 500);
+      }
+    }
+
+    function updateDisplay() {
+      let partial = MESSAGE.slice(0, index);
+      let result = "";
+      for (let i = 0; i < partial.length; i++) {
+        result += partial[i];
+        if (i === 4 || i === 12) result += " ";
+      }
+      display.textContent = result;
+    }
+
+    function finishGame() {
+      setTimeout(() => {
+        launchFireworks();
+        startContinuousBalloons();
+        dropSpheres();
+        showPhotoBookButton();
+      }, 1000);
+    }
+
+    function launchFireworks() {
+      const colors = ['#FFD700', '#C0C0C0', '#FF69B4', '#87CEEB'];
+      
+      for (let i = 0; i < 150; i++) {
+        setTimeout(() => {
+          const firework = document.createElement("div");
+          firework.className = "firework";
+          
+          const startX = Math.random() * window.innerWidth;
+          const startY = Math.random() * window.innerHeight;
+          const dx = (Math.random() - 0.5) * 300;
+          const dy = (Math.random() - 0.5) * 300;
+          
+          firework.style.left = startX + "px";
+          firework.style.top = startY + "px";
+          firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+          firework.style.setProperty('--dx', dx + 'px');
+          firework.style.setProperty('--dy', dy + 'px');
+          
+          document.body.appendChild(firework);
+          
+          setTimeout(() => firework.remove(), 2000);
+        }, i * 20);
+      }
+    }
+
+    function startContinuousBalloons() {
+      setInterval(() => {
+        const balloon = document.createElement("img");
+        balloon.className = "balloon";
+        balloon.src = `balloon${(Math.floor(Math.random() * 10) + 1)}.png`;
+        balloon.style.left = Math.random() * (window.innerWidth - 60) + "px";
+        balloon.style.bottom = "-100px";
+        balloon.style.animationDuration = `${8 + Math.random() * 6}s`;
+        balloon.style.animationDelay = `${Math.random() * 2}s`;
+        
+        document.body.appendChild(balloon);
+        
+        setTimeout(() => balloon.remove(), 16000);
+      }, 800);
+    }
+
+    function dropSpheres() {
+      mediaItems.forEach((item, i) => {
+        setTimeout(() => {
+          const sphere = document.createElement("div");
+          sphere.className = "sphere";
+          sphere.textContent = item.symbol;
+          sphere.style.background = `radial-gradient(circle, ${item.color}, ${item.color}88)`;
+          
+          // Random starting position
+          const startX = Math.random() * (window.innerWidth - 80);
+          sphere.style.left = startX + "px";
+          sphere.style.top = "-80px";
+          
+          // Different physics for each sphere
+          const fallDuration = 2 + Math.random() * 1.5;
+          const bounce = 0.6 + Math.random() * 0.4;
+          
+          sphere.style.transition = `top ${fallDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+          
+          document.body.appendChild(sphere);
+          
+          // Drop animation
+          setTimeout(() => {
+            const groundY = window.innerHeight - 120 - Math.random() * 100;
+            sphere.style.top = groundY + "px";
+          }, 100);
+          
+          // Start floating after landing
+          setTimeout(() => {
+            sphere.classList.add("floating");
+            sphere.onclick = () => handleSphereClick(item, sphere);
+          }, (fallDuration * 1000) + 500);
+          
+        }, i * 300);
+      });
+    }
+
+    function handleSphereClick(item, sphere) {
+      if (item.type === 'song') {
+        songPlayer.src = item.file;
+        songPlayer.play();
+        
+        // Show dancing GIF
+        if (item.dance) {
+          showDanceGif(item.dance);
+        }
+      } else if (item.type === 'video') {
+        // Create video element for video playback
+        const video = document.createElement('video');
+        video.src = item.file;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1000;
+          max-width: 80vw;
+          max-height: 80vh;
+          border-radius: 15px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        `;
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0,0,0,0.8);
+          z-index: 999;
+        `;
+        
+        overlay.onclick = () => {
+          document.body.removeChild(overlay);
+          document.body.removeChild(video);
+        };
+        
+        document.body.appendChild(overlay);
+        document.body.appendChild(video);
+      }
+      
+      // Sphere burst effect
+      createSphereBurst(sphere);
+      sphere.remove();
+    }
+
+    function showDanceGif(danceFile) {
+      if (currentDanceGif) {
+        document.body.removeChild(currentDanceGif);
+      }
+      
+      currentDanceGif = document.createElement("div");
+      currentDanceGif.className = "dance-overlay";
+      currentDanceGif.innerHTML = `<img src="${danceFile}" alt="Dancing">`;
+      
+      document.body.appendChild(currentDanceGif);
+      
+      // Remove after song ends (approximate)
+      setTimeout(() => {
+        if (currentDanceGif && document.body.contains(currentDanceGif)) {
+          document.body.removeChild(currentDanceGif);
+          currentDanceGif = null;
+        }
+      }, 30000);
+    }
+
+    function createSphereBurst(sphere) {
+      const rect = sphere.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      for (let i = 0; i < 25; i++) {
+        const particle = document.createElement("div");
+        particle.style.cssText = `
+          position: fixed;
+          width: 8px;
+          height: 8px;
+          background: ${sphere.style.background};
+          border-radius: 50%;
+          left: ${centerX}px;
+          top: ${centerY}px;
+          pointer-events: none;
+          z-index: 999;
+        `;
+        
+        const angle = (Math.PI * 2 * i) / 25;
+        const velocity = 100 + Math.random() * 100;
+        const dx = Math.cos(angle) * velocity;
+        const dy = Math.sin(angle) * velocity;
+        
+        particle.style.transition = "all 2s ease-out";
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.style.transform = `translate(${dx}px, ${dy}px)`;
+          particle.style.opacity = "0";
+        }, 50);
+        
+        setTimeout(() => particle.remove(), 2000);
+      }
+    }
+
+    function showPhotoBookButton() {
+      const btn = document.createElement("button");
+      btn.className = "photo-book-btn";
+      btn.innerHTML = "📸";
+      btn.onclick = openGallery;
+      document.body.appendChild(btn);
+    }
+
+    function openGallery() {
+      currentPhotoIndex = 0;
+      updatePhoto();
+      document.getElementById("photoGallery").style.display = "flex";
+    }
+
+    function closeGallery() {
+      document.getElementById("photoGallery").style.display = "none";
+    }
+
+    function nextPhoto() {
+      currentPhotoIndex = (currentPhotoIndex + 1) % photoFiles.length;
+      updatePhoto();
+    }
+
+    function prevPhoto() {
+      currentPhotoIndex = (currentPhotoIndex - 1 + photoFiles.length) % photoFiles.length;
+      updatePhoto();
+    }
+
+    function updatePhoto() {
+      document.getElementById("currentPhoto").src = photoFiles[currentPhotoIndex];
+    }
+
+    // Initialize game
+    createCards();
+    
+    // Stop any current song when new one starts
+    songPlayer.addEventListener('play', () => {
+      if (currentDanceGif && document.body.contains(currentDanceGif)) {
+        document.body.removeChild(currentDanceGif);
+        currentDanceGif = null;
+      }
+    });
+  </script>
+</body>
+</html>
